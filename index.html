@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>车险退保计算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    form {
+      width: 300px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f8f9fa;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="date"],
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #result {
+      width: 300px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f8f9fa;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>车险退保计算器</h2>
+  <form>
+    <label for="startDate">起保日期：</label>
+    <input type="date" id="startDate">
+    <label for="premium">总保费：</label>
+    <input type="number" id="premium">
+    <label for="policy">政策（百分比）：</label>
+    <input type="text" id="policy">
+    <button type="button" onclick="calculateRefund()">计算退保金额</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    function calculateRefund() {
+      const startDate = new Date(document.getElementById('startDate').value);
+      const today = new Date();
+      const premium = parseFloat(document.getElementById('premium').value);
+      const policy = parseFloat(document.getElementById('policy').value) / 100;
+
+      // 计算已保天数
+      const insuredDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      const totalDaysInYear = 365;
+      const uninsuredDays = totalDaysInYear - insuredDays;
+
+      // 计算退保金额
+      const refund = (uninsuredDays / totalDaysInYear) * premium / 1.06;
+
+      // 计算需收回的佣金（不涉及退保保费）
+      const commission = refund * policy;
+
+      document.getElementById('result').innerHTML = `使用天数：${insuredDays} 天<br>退保金额为：${refund.toFixed(2)} 元<br>需收回佣金：${commission.toFixed(2)} 元`;
+    }
+  </script>
+</body>
+
+</html>
