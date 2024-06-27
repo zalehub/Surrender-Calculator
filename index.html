@@ -82,7 +82,7 @@
       const uninsuredDays = totalDaysInYear - insuredDays;
 
       // 计算退保金额
-      const refund = (uninsuredDays / totalDaysInYear) * premium / 1.06;
+      const refund = (uninsuredDays / totalDaysInYear) * premium;
 
       // 计算需收回的佣金（不涉及退保保费）
       const commission = refund * policy;
