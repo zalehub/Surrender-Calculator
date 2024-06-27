@@ -7,6 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>车险退保计算器</title>
   <style>
+.centered-text {
+  text-align: center;
+}
     body {
       font-family: Arial, sans-serif;
     }
@@ -61,35 +64,46 @@
   <form>
     <label for="startDate">起保日期：</label>
     <input type="date" id="startDate">
-    <label for="premium">总保费：</label>
-    <input type="number" id="premium">
-    <label for="policy">政策（百分比）：</label>
-    <input type="text" id="policy">
-    <button type="button" onclick="calculateRefund()">计算退保金额</button>
+    <label for="totalPremium">总保费：</label>
+    <input type="number" id="totalPremium">
+    <label for="policyRate">政策（百分比）：</label>
+    <input type="text" id="policyRate">
+    <button type="button" onclick="calculateSurrender()">计算</button>
   </form>
   <div id="result"></div>
 
   <script>
-    function calculateRefund() {
+    function calculateSurrender() {
       const startDate = new Date(document.getElementById('startDate').value);
       const today = new Date();
-      const premium = parseFloat(document.getElementById('premium').value);
-      const policy = parseFloat(document.getElementById('policy').value) / 100;
+      const totalPremium = parseFloat(document.getElementById('totalPremium').value);
+      const policyRate = parseFloat(document.getElementById('policyRate').value) / 100;
 
       // 计算已保天数
       const insuredDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-      const totalDaysInYear = 365;
-      const uninsuredDays = totalDaysInYear - insuredDays;
+      let isLeapYear = false;
+      if ((today.getFullYear() % 4 === 0 && today.getFullYear() % 100!== 0) || today.getFullYear() % 400 === 0) {
+        isLeapYear = true;
+      }
 
-      // 计算退保金额
-      const refund = (uninsuredDays / totalDaysInYear) * premium;
+      const totalDays = isLeapYear? 366 : 365;
+      const uninsuredDays = totalDays - insuredDays;
 
-      // 计算需收回的佣金（不涉及退保保费）
-      const commission = refund * policy;
+      // 计算退保保费
+      let surrenderPremium;
+      if (isLeapYear) {
+        surrenderPremium = uninsuredDays * totalPremium / totalDays - totalPremium / totalDays;
+      } else {
+        surrenderPremium = uninsuredDays * totalPremium / totalDays;
+      }
 
-      document.getElementById('result').innerHTML = `使用天数：${insuredDays} 天<br>退保金额为：${refund.toFixed(2)} 元<br>需收回佣金：${commission.toFixed(2)} 元`;
+      // 计算佣金
+      const commission = surrenderPremium * policyRate;
+
+      document.getElementById('result').innerHTML = `使用天数：${insuredDays} 天<br>退保保费：${surrenderPremium.toFixed(2)} 元<br>需收回佣金：${commission.toFixed(2)} 元`;
     }
   </script>
+	<div class="centered-text">河北聚一</div>
 </body>
 
 </html>
