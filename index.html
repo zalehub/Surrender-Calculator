@@ -7,9 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>车险退保计算器</title>
   <style>
-.centered-text {
-  text-align: center;
-}
     body {
       font-family: Arial, sans-serif;
     }
@@ -62,7 +59,7 @@
 
 <body>
   <form>
-    <label for="startDate">起保日期：</label>
+    <label for="startDate">起始日期：</label>
     <input type="date" id="startDate">
     <label for="totalPremium">总保费：</label>
     <input type="number" id="totalPremium">
@@ -81,20 +78,21 @@
 
       // 计算已保天数
       const insuredDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-      let isLeapYear = false;
-      if ((today.getFullYear() % 4 === 0 && today.getFullYear() % 100!== 0) || today.getFullYear() % 400 === 0) {
-        isLeapYear = true;
-      }
 
-      const totalDays = isLeapYear? 366 : 365;
-      const uninsuredDays = totalDays - insuredDays;
+      // 判断是否为闰年以及当前日期是否大于 2 月 29 日
+      let totalDays = 365;
+      if ((today.getFullYear() % 4 === 0 && today.getFullYear() % 100!== 0) || today.getFullYear() % 400 === 0) {
+        if (today.getMonth() > 1 || (today.getMonth() === 1 && today.getDate() >= 29)) {
+          totalDays = 366;
+        }
+      }
 
       // 计算退保保费
       let surrenderPremium;
-      if (isLeapYear) {
-        surrenderPremium = uninsuredDays * totalPremium / totalDays - totalPremium / totalDays;
+      if (insuredDays > 30) {
+        surrenderPremium = (totalDays - insuredDays) * totalPremium / totalDays - totalPremium / totalDays;
       } else {
-        surrenderPremium = uninsuredDays * totalPremium / totalDays;
+        surrenderPremium = (totalDays - insuredDays) * totalPremium / totalDays;
       }
 
       // 计算佣金
@@ -103,7 +101,12 @@
       document.getElementById('result').innerHTML = `使用天数：${insuredDays} 天<br>退保保费：${surrenderPremium.toFixed(2)} 元<br>需收回佣金：${commission.toFixed(2)} 元`;
     }
   </script>
-	<div class="centered-text">©|河北聚一</div>
 </body>
+<div style="display: flex; justify-content: center;">
+  ©2024河北聚一·车险·非车险·保险超市
+</div>
+<div style="display: flex; justify-content: center;">
+  聚一万家，让出单更简单
+</div>
 
 </html>
