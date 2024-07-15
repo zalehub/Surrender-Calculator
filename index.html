@@ -10,64 +10,91 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      background-color: #f8f9fa;
+    }
+
+   .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
       color: #333;
+      margin-bottom: 20px;
     }
 
     label {
       display: block;
       margin-bottom: 10px;
+      font-weight: bold;
     }
 
     input[type="number"],
     input[type="date"] {
       padding: 8px;
       font-size: 16px;
-      width: 200px;
-      border: 1px solid #ccc;
+      width: 100%;
+      border: 1px solid #ced4da;
       border-radius: 4px;
     }
 
     button {
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #4CAF50;
-      color: white;
+      background-color: #007bff;
+      color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #45a049;
+      background-color: #0056b3;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #333;
     }
 
     p {
       margin-top: 20px;
     }
+
+    #insuredDays,
+    #refundPremium,
+    #commission {
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
-  
-  <label for="totalPremium">保费：</label>
-  <input type="number" id="totalPremium">
+  <div class="container">
+    <h1>车险退保计算器</h1>
 
-  <label for="effectiveDate">生效日期：</label>
-  <input type="date" id="effectiveDate">
+    <label for="totalPremium">保费：</label>
+    <input type="number" id="totalPremium">
 
-  <label for="policy">政策（%）：</label>
-  <input type="number" id="policy">
+    <label for="effectiveDate">生效日期：</label>
+    <input type="date" id="effectiveDate">
 
-  <button onclick="calculate()">计算</button>
+    <label for="policy">政策（%）：</label>
+    <input type="number" id="policy">
 
-  <h2>计算结果：</h2>
+    <button onclick="calculate()">计算</button>
 
-  <p>生效天数：<span id="insuredDays"></span></p>
-  <p>退保保费：<span id="refundPremium"></span></p>
-  <p>收回佣金：<span id="commission"></span></p>
+    <h2>计算结果：</h2>
+
+    <p>生效天数：<span id="insuredDays"></span></p>
+    <p>退保保费：<span id="refundPremium"></span></p>
+    <p>收回佣金：<span id="commission"></span></p>
+  </div>
 
   <script>
     function calculate() {
@@ -88,6 +115,10 @@
       document.getElementById("commission").innerHTML = commission.toFixed(2);
     }
   </script>
+</body>
+
+</html>
+<html>
 </body>
 <div style="display: flex; justify-content: center;">
   ©2024河北聚一·车险·非车险·保险超市
