@@ -9,15 +9,11 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      padding: 20px;
     }
 
-    form {
-      width: 300px;
-      margin: 0 auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #f8f9fa;
+    h1 {
+      color: #333;
     }
 
     label {
@@ -25,80 +21,71 @@
       margin-bottom: 10px;
     }
 
-    input[type="date"],
     input[type="number"],
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
+    input[type="date"] {
+      padding: 8px;
+      font-size: 16px;
+      width: 200px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 4px;
     }
 
     button {
-      width: 100%;
-      padding: 10px;
-      background-color: #007bff;
-      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
     }
 
-    #result {
-      width: 300px;
-      margin: 20px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #f8f9fa;
-      text-align: center;
+    button:hover {
+      background-color: #45a049;
+    }
+
+    p {
+      margin-top: 20px;
     }
   </style>
 </head>
 
 <body>
-  <form>
-    <label for="startDate">起始日期：</label>
-    <input type="date" id="startDate">
-    <label for="totalPremium">总保费：</label>
-    <input type="number" id="totalPremium">
-    <label for="policyRate">政策（百分比）：</label>
-    <input type="text" id="policyRate">
-    <button type="button" onclick="calculateSurrender()">计算</button>
-  </form>
-  <div id="result"></div>
+  
+  <label for="totalPremium">保费：</label>
+  <input type="number" id="totalPremium">
+
+  <label for="effectiveDate">生效日期：</label>
+  <input type="date" id="effectiveDate">
+
+  <label for="policy">政策（%）：</label>
+  <input type="number" id="policy">
+
+  <button onclick="calculate()">计算</button>
+
+  <h2>计算结果：</h2>
+
+  <p>生效天数：<span id="insuredDays"></span></p>
+  <p>退保保费：<span id="refundPremium"></span></p>
+  <p>收回佣金：<span id="commission"></span></p>
 
   <script>
-    function calculateSurrender() {
-      const startDate = new Date(document.getElementById('startDate').value);
-      const today = new Date();
-      const totalPremium = parseFloat(document.getElementById('totalPremium').value);
-      const policyRate = parseFloat(document.getElementById('policyRate').value) / 100;
+    function calculate() {
+      var totalPremium = parseInt(document.getElementById("totalPremium").value);
+      var effectiveDate = new Date(document.getElementById("effectiveDate").value);
+      var policy = parseInt(document.getElementById("policy").value) / 100;
 
-      // 计算已保天数
-      const insuredDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      var currentDate = new Date();
 
-      // 判断是否为闰年以及当前日期是否大于 2 月 29 日
-      let totalDays = 365;
-      if ((today.getFullYear() % 4 === 0 && today.getFullYear() % 100!== 0) || today.getFullYear() % 400 === 0) {
-        if (today.getMonth() > 1 || (today.getMonth() === 1 && today.getDate() >= 29)) {
-          totalDays = 366;
-        }
-      }
+      var insuredDays = Math.floor((currentDate - effectiveDate) / (1000 * 60 * 60 * 24)) + 1;  // 包含当前日期，所以加 1
 
-      // 计算退保保费
-      let surrenderPremium;
-      if (insuredDays > 30) {
-        surrenderPremium = (totalDays - insuredDays) * totalPremium / totalDays - totalPremium / totalDays;
-      } else {
-        surrenderPremium = (totalDays - insuredDays) * totalPremium / totalDays;
-      }
+      var refundPremium = totalPremium - (totalPremium * insuredDays / 365);
 
-      // 计算佣金
-      const commission = surrenderPremium * policyRate;
+      var commission = refundPremium * policy;
 
-      document.getElementById('result').innerHTML = `使用天数：${insuredDays} 天<br>退保保费：${surrenderPremium.toFixed(2)} 元<br>需收回佣金：${commission.toFixed(2)} 元`;
+      document.getElementById("insuredDays").innerHTML = insuredDays;
+      document.getElementById("refundPremium").innerHTML = refundPremium.toFixed(2);
+      document.getElementById("commission").innerHTML = commission.toFixed(2);
     }
   </script>
 </body>
@@ -108,5 +95,4 @@
 <div style="display: flex; justify-content: center;">
   聚一万家，让出单更简单
 </div>
-
 </html>
