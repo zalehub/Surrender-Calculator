@@ -13,7 +13,7 @@
       background-color: #f8f9fa;
     }
 
-  .container {
+ .container {
       max-width: 600px;
       margin: 0 auto;
       background-color: #fff;
@@ -22,15 +22,15 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-  .input-group {
+ .input-group {
       margin-bottom: 20px;
     }
 
-  .input-label {
+ .input-label {
       font-weight: bold;
     }
 
-  .input-field {
+ .input-field {
       padding: 8px;
       font-size: 16px;
       width: 100%;
@@ -38,7 +38,7 @@
       border-radius: 4px;
     }
 
-  .calculate-btn {
+ .calculate-btn {
       padding: 10px 20px;
       font-size: 16px;
       background-color: #007bff;
@@ -49,16 +49,16 @@
       transition: background-color 0.3s ease;
     }
 
-  .calculate-btn:hover {
+ .calculate-btn:hover {
       background-color: #0056b3;
     }
 
-  .result-heading {
+ .result-heading {
       margin-top: 30px;
       color: #333;
     }
 
-  .result-text {
+ .result-text {
       margin-top: 20px;
       font-weight: bold;
     }
@@ -122,6 +122,10 @@
       var currentDate = new Date();
 
       var insuredDays = Math.floor((currentDate - effectiveDate) / (1000 * 60 * 60 * 24)) + 1;  // 包含当前日期，所以加 1
+
+      if (effectiveDate > currentDate) {
+        totalPremium = totalPremium * 0.97;  // 生效日期大于当前日期，扣除保费 3%
+      }
 
       var refundPremium = totalPremium - (totalPremium * insuredDays / 365);
 
