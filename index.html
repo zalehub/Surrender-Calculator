@@ -13,7 +13,7 @@
       background-color: #f8f9fa;
     }
 
-  .container {
+ .container {
       max-width: 600px;
       margin: 0 auto;
       background-color: #fff;
@@ -22,15 +22,15 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-  .input-group {
+ .input-group {
       margin-bottom: 20px;
     }
 
-  .input-label {
+ .input-label {
       font-weight: bold;
     }
 
-  .input-field {
+ .input-field {
       padding: 8px;
       font-size: 16px;
       width: 100%;
@@ -38,7 +38,7 @@
       border-radius: 4px;
     }
 
-  .calculate-btn {
+ .calculate-btn {
       padding: 10px 20px;
       font-size: 16px;
       background-color: #007bff;
@@ -49,16 +49,16 @@
       transition: background-color 0.3s ease;
     }
 
-  .calculate-btn:hover {
+ .calculate-btn:hover {
       background-color: #0056b3;
     }
 
-  .result-heading {
+ .result-heading {
       margin-top: 30px;
       color: #333;
     }
 
-  .result-text {
+ .result-text {
       margin-top: 20px;
       font-weight: bold;
     }
@@ -109,7 +109,7 @@
     function calculate() {
       var totalPremium = parseInt(document.getElementById("totalPremium").value);
       var effectiveDate = new Date(document.getElementById("effectiveDate").value);
-      var policy = parseInt(document.getElementById("policy").value) / 100;
+      var policy = parseFloat(document.getElementById("policy").value);  // 使用 parseFloat 保留小数
 
       var currentDate = new Date();
 
@@ -122,7 +122,8 @@
 
       var refundPremium = totalPremium; 
 
-      var commission = (refundPremium * policy) / 1.06; 
+      var policyPercent = policy / 100;  // 将政策值转换为百分比
+      var commission = (refundPremium / 1.06) * policyPercent;  // 计算佣金
 
       document.getElementById("insuredDays").innerHTML = insuredDays;
       document.getElementById("refundPremium").innerHTML = refundPremium.toFixed(2);
