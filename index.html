@@ -1,104 +1,193 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>车险退保计算器</title>
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车险退保计算器 H5</title>
+    <style>
+        /* 重置一些默认样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        /* 主要容器样式 */
+       .calculator-wrapper {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 标题样式 */
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 标签和输入框的通用样式 */
+       .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+        }
+
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus,
+        input[type="date"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* 按钮样式 */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* 错误提示样式 */
+       .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* 计算结果样式 */
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* 页脚样式 */
+       .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+        }
+
+       .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
-  <div id="app">
-    <v-app>
-      <v-container fluid>
-        <v-layout row wrap justify-center>
-          <v-flex xs12 sm8 md6 lg4>
-            <v-card class="calculator-card">
-              <v-card-title primary-title>
-                <h2 class="headline mb-0 text-h4">车险退保计算器</h2>
-              </v-card-title>
-              <v-card-text>
-                <v-form ref="form">
-                  <v-text-field v-model="premium" label="保单保费" placeholder="请输入金额" required></v-text-field>
-                  <v-text-field v-model="startDate" label="保单生效时间" type="date" required></v-text-field>
-                  <v-text-field v-model="policyPercentage" label="政策" placeholder="请输入数字（如 5 代表 5%）" required></v-text-field>
-                  <v-alert v-if="hasError" type="error">{{ errorMessage }}</v-alert>
-                </v-form>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green" @click="calculate">计算</v-btn>
-              </v-card-actions>
-              <v-card-text v-if="result" class="pt-3">
-                <p>退保保费：{{ refundPremiumFormatted }} 元</p>
-                <p>收回佣金：{{ commissionFormatted }} 元</p>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-app>
-  </div>
+    <div class="calculator-wrapper">
+        <div class="input-group">
+            <label for="premium">保单保费：</label>
+            <input type="number" id="premium" placeholder="请输入金额">
+            <div class="error-message" id="premium-error"></div>
+        </div>
+        <div class="input-group">
+            <label for="startDate">保单生效时间：</label>
+            <input type="date" id="startDate">
+            <div class="error-message" id="startDate-error"></div>
+        </div>
+        <div class="input-group">
+            <label for="policyPercentage">政策：</label>
+            <input type="number" id="policyPercentage" placeholder="请输入数字（如 5 代表 5%）">
+            <div class="error-message" id="policyPercentage-error"></div>
+        </div>
+        <button onclick="calculate()">计算</button>
+        <div id="result"></div>
+    </div>
+    <div class="footer">
+        河北聚一·让算单更简单<br>
+        如有疑问，请致电：<a href="tel:13731461536">13731461536</a><br>
+        © 2024 河北聚一版权所有
+    </div>
+    <script>
+        function calculate() {
+            // 清除之前的错误提示
+            document.getElementById('premium-error').textContent = '';
+            document.getElementById('startDate-error').textContent = '';
+            document.getElementById('policyPercentage-error').textContent = '';
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  <script>
-    new Vue({
-      el: '#app',
-      data: {
-        premium: null,
-        startDate: null,
-        policyPercentage: null,
-        hasError: false,
-        errorMessage: '',
-        result: false,
-        refundPremium: null,
-        commission: null
-      },
-      methods: {
-        calculate() {
-          this.hasError = false;
-          this.errorMessage = '';
-          const premium = parseFloat(this.premium);
-          const startDate = new Date(this.startDate);
-          const policyPercentage = parseFloat(this.policyPercentage);
+            const premium = parseFloat(document.getElementById('premium').value);
+            const startDate = new Date(document.getElementById('startDate').value);
+            const policyPercentage = parseFloat(document.getElementById('policyPercentage').value);
 
-          if (isNaN(premium) || premium <= 0) {
-            this.hasError = true;
-            this.errorMessage = '请输入正确的保单保费金额';
-            return;
-          }
+            let hasError = false;
 
-          if (isNaN(startDate.getTime())) {
-            this.hasError = true;
-            this.errorMessage = '请选择正确的保单生效时间';
-            return;
-          }
+            if (isNaN(premium) || premium <= 0) {
+                document.getElementById('premium-error').textContent = '请输入正确的保单保费金额';
+                hasError = true;
+            }
 
-          if (isNaN(policyPercentage) || policyPercentage < 0 || policyPercentage > 100) {
-            this.hasError = true;
-            this.errorMessage = '请输入正确的政策（0-100 之间的数字）';
-            return;
-          }
+            if (isNaN(startDate.getTime())) {
+                document.getElementById('startDate-error').textContent = '请选择正确的保单生效时间';
+                hasError = true;
+            }
 
-          const currentDate = new Date();
-          const elapsedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
-          const remainingDays = 365 - elapsedDays;
-          this.refundPremium = premium / 365 * remainingDays;
-          this.commission = this.refundPremium / 1.06 * (policyPercentage / 100);
-          this.refundPremiumFormatted = this.refundPremium.toFixed(2);
-          this.commissionFormatted = this.commission.toFixed(2);
-          this.result = true;
+            if (isNaN(policyPercentage) || policyPercentage < 0 || policyPercentage > 100) {
+                document.getElementById('policyPercentage-error').textContent = '请输入正确的政策（0-100 之间的数字）';
+                hasError = true;
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            const currentDate = new Date();
+            const elapsedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+            const remainingDays = 365 - elapsedDays;
+
+            if (remainingDays < 0) {
+                document.getElementById('result').textContent = '保单已过期无法退保';
+                return;
+            }
+
+            const refundPremium = premium / 365 * remainingDays;
+            const commission = refundPremium / 1.06 * (policyPercentage / 100);
+
+            if (isNaN(refundPremium) || isNaN(commission)) {
+                document.getElementById('result').textContent = '计算出错，请检查输入数据';
+            } else {
+                document.getElementById('result').innerHTML = `退保保费：${refundPremium.toFixed(2)} 元<br>收回佣金：${commission.toFixed(2)} 元`;
+            }
         }
-      }
-    });
-  </script>
+    </script>
 </body>
 
 </html>
