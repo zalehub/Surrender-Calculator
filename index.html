@@ -1,133 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>车险退保计算器</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f8f9fa;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
     }
 
- .container {
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   .calculator-container {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 450px;
+      margin: 80px auto;
     }
 
- .input-group {
-      margin-bottom: 20px;
-    }
-
- .input-label {
-      font-weight: bold;
-    }
-
- .input-field {
-      padding: 8px;
-      font-size: 16px;
-      width: 100%;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-    }
-
- .calculate-btn {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
- .calculate-btn:hover {
-      background-color: #0056b3;
-    }
-
- .result-heading {
-      margin-top: 30px;
+    h2 {
       color: #333;
-    }
-
- .result-text {
-      margin-top: 20px;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
       font-weight: bold;
     }
 
-    footer {
-      margin-top: 50px;
-      padding: 20px 0;
-      background-color: #f8f9fa;
+    label {
+      display: block;
+      margin-bottom: 12px;
+      color: #666;
+      font-size: 16px;
     }
 
-    footer p {
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 18px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="number"]:focus,
+    input[type="date"]:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background-color 0.3s ease;
+      margin-top: 30px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #333;
       text-align: center;
+    }
+
+   .error-message {
+      color: red;
       font-size: 14px;
-      color: #666;
+      margin-top: 8px;
+    }
+
+   .footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #999;
+      font-size: 14px;
+    }
+
+   .footer a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-
-    <div class="input-group">
-      <label class="input-label" for="totalPremium">保费：</label>
-      <input class="input-field" type="number" id="totalPremium">
-    </div>
-
-    <div class="input-group">
-      <label class="input-label" for="effectiveDate">生效日期：</label>
-      <input class="input-field" type="date" id="effectiveDate">
-    </div>
-
-    <div class="input-group">
-      <label class="input-label" for="policy">政策（%）：</label>
-      <input class="input-field" type="number" id="policy">
-    </div>
-
-    <button class="calculate-btn" onclick="calculate()">计算</button>
-
-    <h2 class="result-heading">计算结果：</h2>
-
-    <p class="result-text">生效天数：<span id="insuredDays"></span></p>
-    <p class="result-text">退保保费：<span id="refundPremium"></span></p>
-    <p class="result-text">收回佣金：<span id="commission"></span></p>
+  <div class="calculator-container">
+    <label for="premium">保单保费：</label>
+    <input type="number" id="premium" placeholder="请输入金额">
+    <div class="error-message" id="premium-error"></div>
+    <label for="startDate">保单生效时间：</label>
+    <input type="date" id="startDate">
+    <div class="error-message" id="startDate-error"></div>
+    <label for="policyPercentage">政策：</label>
+    <input type="number" id="policyPercentage" placeholder="请输入数字（如 5 代表 5%）">
+    <div class="error-message" id="policyPercentage-error"></div>
+    <button onclick="calculate()">计算</button>
+    <div id="result"></div>
   </div>
 
+  <div class="footer">
+    河北聚一·让算单更简单<br>
+    如有疑问，请致电：<a href="tel:13731461536">13731461536</a>
+  </div>
 
   <script>
     function calculate() {
-      var totalPremium = parseInt(document.getElementById("totalPremium").value);
-      var effectiveDate = new Date(document.getElementById("effectiveDate").value);
-      var policy = parseFloat(document.getElementById("policy").value);  // 使用 parseFloat 保留小数
+      // 清除之前的错误提示
+      document.getElementById('premium-error').innerHTML = '';
+      document.getElementById('startDate-error').innerHTML = '';
+      document.getElementById('policyPercentage-error').innerHTML = '';
 
-      var currentDate = new Date();
+      const premium = parseFloat(document.getElementById('premium').value);
+      const startDate = new Date(document.getElementById('startDate').value);
+      const policyPercentage = parseFloat(document.getElementById('policyPercentage').value);
 
-      if (effectiveDate > currentDate) {
-        totalPremium = totalPremium * 0.97; 
-      } else {
-        var insuredDays = Math.floor((currentDate - effectiveDate) / (1000 * 60 * 60 * 24)) + 1; 
-        totalPremium = totalPremium - (totalPremium / 365 * insuredDays); 
+      let hasError = false;
+
+      if (isNaN(premium) || premium <= 0) {
+        document.getElementById('premium-error').innerHTML = '请输入正确的保单保费金额';
+        hasError = true;
       }
 
-      var refundPremium = totalPremium; 
+      if (isNaN(startDate.getTime())) {
+        document.getElementById('startDate-error').innerHTML = '请选择正确的保单生效时间';
+        hasError = true;
+      }
 
-      var policyPercent = policy / 100;  // 将政策值转换为百分比
-      var commission = (refundPremium / 1.06) * policyPercent;  // 计算佣金
+      if (isNaN(policyPercentage) || policyPercentage < 0 || policyPercentage > 100) {
+        document.getElementById('policyPercentage-error').innerHTML = '请输入正确的政策（0-100 之间的数字）';
+        hasError = true;
+      }
 
-      document.getElementById("insuredDays").innerHTML = insuredDays;
-      document.getElementById("refundPremium").innerHTML = refundPremium.toFixed(2);
-      document.getElementById("commission").innerHTML = commission.toFixed(2);
+      if (hasError) {
+        return;
+      }
+
+      const currentDate = new Date();
+      const elapsedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+      const remainingDays = 365 - elapsedDays;
+      const refundPremium = premium / 365 * remainingDays;
+      const commission = refundPremium / 1.06 * (policyPercentage / 100);
+
+      document.getElementById('result').innerHTML = `退保保费：${refundPremium.toFixed(2)} 元<br>收回佣金：${commission.toFixed(2)} 元`;
     }
   </script>
 </body>
