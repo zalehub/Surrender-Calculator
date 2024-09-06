@@ -172,14 +172,13 @@
 
             const currentDate = new Date();
             const elapsedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
-            const remainingDays = 365 - elapsedDays;
+            const remainingDays = 365 - elapsedDays - 1;
 
-            if (remainingDays < 0) {
-                document.getElementById('result').textContent = '保单已过期无法退保';
-                return;
+            if (remainingDays <= 0) {
+                refundPremium = premium * 0.97；
             }
 
-            const refundPremium = premium / 365 * remainingDays;
+            
             const commission = refundPremium / 1.06 * (policyPercentage / 100);
 
             if (isNaN(refundPremium) || isNaN(commission)) {
