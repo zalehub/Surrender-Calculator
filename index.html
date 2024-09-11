@@ -22,7 +22,7 @@
             height: 100vh;
         }
 
-      .calculator-wrapper {
+       .calculator-wrapper {
             max-width: 400px;
             margin: 0 auto;
             padding: 20px;
@@ -39,7 +39,7 @@
             font-weight: bold;
         }
 
-      .input-group {
+       .input-group {
             margin-bottom: 15px;
         }
 
@@ -81,7 +81,7 @@
             background-color: #45a049;
         }
 
-      .error-message {
+       .error-message {
             color: red;
             font-size: 12px;
             margin-top: 5px;
@@ -94,14 +94,14 @@
             text-align: center;
         }
 
-      .footer {
+       .footer {
             text-align: center;
             margin-top: 30px;
             font-size: 14px;
             color: #888;
         }
 
-      .footer a {
+       .footer a {
             color: #4CAF50;
             text-decoration: none;
             font-weight: bold;
@@ -168,27 +168,34 @@
                 return;
             }
 
-            // 计算未生效天数
+            // 判断生效日期是否大于当前日期
             const currentDate = new Date();
-            const elapsedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
-            const remainingDays = 365 - elapsedDays - 1;
-
-            // 计算退保保费和收回金额
-            let refundPremium;
-            if (remainingDays <= 0) {
-                // 小于 0 时，直接扣除 3%手续费
-                refundPremium = premium - (premium * 0.03);
+            if (startDate > currentDate) {
+                const surrenderPremium = premium * 0.97;
+                const recoveredCommission = (surrenderPremium / 1.06) * (policyPercentage / 100);
+                document.getElementById('result').innerHTML = `退保保费：${surrenderPremium.toFixed(2)} 元<br>收回佣金：${recoveredCommission.toFixed(2)} 元`;
             } else {
-                // 大于 0 时按天数计算
-                refundPremium = premium - (premium / 365 * (elapsedDays + 1));
-            }
-            const commission = refundPremium / 1.06 * (policyPercentage / 100);
+                // 计算未生效天数
+                const elapsedDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+                const remainingDays = 365 - elapsedDays - 1;
 
-            // 显示结果
-            if (isNaN(refundPremium) || isNaN(commission)) {
-                document.getElementById('result').textContent = '计算出错，请检查输入数据';
-            } else {
-                document.getElementById('result').innerHTML = `退保保费：${refundPremium.toFixed(2)} 元<br>收回金额：${commission.toFixed(2)} 元`;
+                // 计算退保保费和收回金额
+                let refundPremium;
+                if (remainingDays <= 0) {
+                    // 小于 0 时，直接扣除 3%手续费
+                    refundPremium = premium - (premium * 0.03);
+                } else {
+                    // 大于 0 时按天数计算
+                    refundPremium = premium - (premium / 365 * (elapsedDays + 1));
+                }
+                const commission = refundPremium / 1.06 * (policyPercentage / 100);
+
+                // 显示结果
+                if (isNaN(refundPremium) || isNaN(commission)) {
+                    document.getElementById('result').textContent = '计算出错，请检查输入数据';
+                } else {
+                    document.getElementById('result').innerHTML = `退保保费：${refundPremium.toFixed(2)} 元<br>收回金额：${commission.toFixed(2)} 元`;
+                }
             }
         }
     </script>
